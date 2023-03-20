@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ntfy.sh: EventSource Example</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap">
+    <style>
+        header {
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        body { font-size: 1.2em; line-height: 130%; }
+        #events { font-family: monospace; }
+        
+        /* Style scrollbars for WebKit-based browsers (Chrome, Safari, etc.) */
+    
+        .iframe::-webkit-scrollbar {
+          width: 6px;
+          background-color: transparent;
+        }
+        
+        .iframe::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 3px;
+        }
+        
+		.dropdown {
+		  position: relative;
+		  display: inline-block;
+		}
+
+		.dropdown-button {
+		  background-color: #FFFFFF;
+		  border: 2px solid #1ABC9C;
+		  color: #1ABC9C;
+		  padding: 2px 22px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 14px;
+		  margin: 4px 2px;
+		  cursor: pointer;
+		  border-radius: 4px;
+		  transition: all 0.3s ease-in-out;
+		  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.dropdown-content {
+	      display: none;
+		  position: absolute;
+		  z-index: 1;
+		  top: 100%;
+		  left: 0;
+		  min-width: 160px;
+		  padding: 12px;
+		  background-color: #f9f9f9;
+		  border: 2px solid #1ABC9C;
+		  border-top: none;
+		  border-radius: 0 0 5px 5px;
+		}
+
+		.dropdown-content a {
+		  color: #1ABC9C;
+		  display: block;
+		  padding: 8px 16px;
+		  text-decoration: none;
+		}
+
+		.dropdown-content a:hover {
+		  background-color: #1ABC9C;
+		  color: #FFFFFF;
+		}
+
+		.show {
+		  display: block;
+		}
+        .iframe::-webkit-scrollbar {
+          width: 1px;
+          height: 1px;
+        }
+        
+		.iframe {
+		  border: 0;
+		}
+		.input {
+		    padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); 
+		    font-size: 12px; font-family: 'Roboto Mono', monospace; background: rgba(245, 245, 245, 1);
+		}
+		.hor1 {
+		    background: rgba(1, 211, 299, 1)
+
+		}
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+              padding: 3px; 
+        }
+        h1 {
+          font-family: 'Orbitron', sans-serif;
+        }        
+        body {
+          background-color:  rgba(0, 0, 0, 0.1);
+          font-family: 'Orbitron', sans-serif;
+          font-size: 1.2em;
+          line-height: 130%;
+        }
+    </style>
+        
+	<script>
+		function toggleDropdown() {
+		  var dropdownContent = document.getElementById("dropdown-content");
+		  dropdownContent.classList.toggle("show");
+		}
+
+		window.onclick = function(event) {
+		  if (!event.target.matches('.dropdown-button')) {
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			for (var i = 0; i < dropdowns.length; i++) {
+			  var openDropdown = dropdowns[i];
+			  if (openDropdown.classList.contains('show')) {
+				openDropdown.classList.remove('show');
+			  }
+			}
+		  }
+		}
+	</script>
+</head>
+<body>
+    <header>
+        <h1>Strg</h1>
+        <nav>
+            <ul>
+            </ul>
+        </nav>
+    </header>
+<p>
+</p>
+
+<script>
+<button id="publishButton">Send test notification</button>
+<p><b>Log:</b></p>
+<div id="events"></div>
+ const publishURL = `https://n.yyps.de/alert`;
+     // Publish button
+    document.getElementById("publishButton").onclick = () => {
+        fetch(publishURL, {
+            method: 'POST', // works with PUT as well, though that sends an OPTIONS request too!
+            body: `It is ${new Date().toString()}. This is a test.`
+        })
+    };
+    
+    const publishURL = `https://n.yyps.de/alert`;
+    // Publish button
+    document.getElementById("publishButton").onclick = () => {
+        fetch(publishURL, {
+            method: 'POST', // works with PUT as well, though that sends an OPTIONS request too!
+            body: `It is ${new Date().toString()}. This is a test.`
+        })
+    };
+  function encodeText1() {
+    var textInput1 = document.getElementById("textInput1").value;
+    var encodedText1 = encodeURIComponent(textInput1);
+    var updatedText1 = "mqtt madhouse/cmd " + textInput1;
+    var encodedText = btoa(updatedText1); // Base64 encode the input string
+    
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+    
+    // Send request to https://n.yyps.de/alert
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("POST", "https://n.yyps.de/alert", true);
+    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        console.log(xhr2.responseText);
+      }
+    };
+    xhr2.send("encodedText=" + encodedText);
+  }
+</script>
+
+<script>
+curl https://alert.dmw.zone/ls2.html
+fetch('https://alert.dmw.zone/ls2.html');
+  function encodeText2() {
+    var textInput = document.getElementById("textInput2").value;
+    var encodedText1 = encodeURIComponent(textInput);
+    var updatedText = "mqtt madhouse/cmd curl https://maker.ifttt.com/trigger/execute/with/key/4q38KZvz7CwD5_QzdUZHq/?value1=" + encodedText1;
+    var encodedText = btoa(updatedText); // Base64 encode the input string
+    
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+    
+    // Send request to https://n.yyps.de/alert
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("POST", "https://n.yyps.de/alert", true);
+    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        console.log(xhr2.responseText);
+      }
+    };
+    xhr2.send("encodedText=" + encodedText);
+    xhr2.send("AGAIN encodedText=" + encodedText);
+  }
+</script>
+
+<script>
+  function encodeText3() {
+    var textInput1 = document.getElementById("textInput3").value;
+    var textInput = "mqtt " + textInput1 ;
+    var encodedText = btoa(textInput); // Base64 encode the input string
+
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+
+    // Send request to https://n.yyps.de/alert
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("POST", "https://n.yyps.de/alert", true);
+    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        console.log(xhr2.responseText);
+      }
+    };
+    xhr2.send("encodedText=" + encodedText);
+  }
+</script>
+
+<script>
+  function encodeText4() {
+    var textInput4 = document.getElementById("textInput4").value;
+    var updatedText4 = "mqtt madhouse/chatty/control.html " + textInput4;
+    var encodedText = btoa(updatedText4); // Base64 encode the input string
+
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+  }
+</script>
+
+<script>
+  function encodeText5() {
+    var textInput5 = document.getElementById("textInput5").value;
+    var updatedText5 = textInput5;
+    var encodedText = btoa(updatedText5); // Base64 encode the input string
+
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+    
+    // Send request to https://n.yyps.de/alert
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("POST", "https://n.yyps.de/alert", true);
+    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        console.log(xhr2.responseText);
+      }
+    };
+    xhr2.send("encodedText=" + encodedText);
+  }
+</script>
+
+<script>
+  function MediaVmin() {
+    var textInput1 = document.getElementById("MediaDevice").value;
+    var textInput = "mqtt " + textInput1;
+    var encodedText = btoa(textInput); // Base64 encode the input string
+
+    // Send request to https://n.yyps.de/cmd
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open("POST", "https://n.yyps.de/cmd", true);
+    xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr1.onreadystatechange = function() {
+      if (xhr1.readyState === 4 && xhr1.status === 200) {
+        console.log(xhr1.responseText);
+      }
+    };
+    xhr1.send(encodedText);
+
+    // Send request to https://n.yyps.de/alert
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("POST", "https://n.yyps.de/alert", true);
+    xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        console.log(xhr2.responseText);
+      }
+    };
+    xhr2.send("encodedText=" + encodedText);
+  }
+</script>
+<div cllass="quadrat">
+<a href="https://healthchecks.io/" target="_blank"><button onclick="encodeText6()" style="background-color: #1ABC9C; color: white; border: none; padding: 8px; border-radius: 5px; font-size: 12px; cursor: pointer; font-family: 'Orbitron', sans-serif;">HC</button></a>
+<a href="https://healthchecks.io/" target="_blank"><button onclick="encodeText6()" style="background-color: #1ABC9C; color: white; border: none; padding: 8px; border-radius: 5px; font-size: 12px; cursor: pointer; font-family: 'Orbitron', sans-serif;">SYNC</button></a>
+<img src="https://healthchecks.io/badge/031f1a71-1400-4ab0-9019-c28b05/wTxbcbM6-2/execute_ionos2.svg">
+<img src="https://healthchecks.io/badge/031f1a71-1400-4ab0-9019-c28b05/Xc-G_UMy-2/execute_aws.svg">
+<img src="https://healthchecks.io/badge/031f1a71-1400-4ab0-9019-c28b05/RErULYju-2/execute_ionos1.svg">
+<img src="https://healthchecks.io/badge/031f1a71-1400-4ab0-9019-c28b05/E2ceaHre-2/execute_debian.svg">
+<img src="https://healthchecks.io/badge/031f1a71-1400-4ab0-9019-c28b05/RErULYju-2/execute_ionos1.svg">
+  <script>
+    async function fetchWebpageContent(url) {
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        document.getElementById("webpageContent").innerHTML = text;
+      } catch (error) {
+        console.error("Error fetching webpage content:", error);
+      }
+    }
+
+    // Replace the URL with the webpage you want to fetch
+    const url = "https://alert.dmw.zone/ls2.html";
+    fetchWebpageContent(url);
+  </script>
+
+</div>
+<div class="buttons"> 
+<button onclick="encodeText1()" style="background-color: #1ABC9C; color: white; border: none; padding: 10px; border-radius: 5px; font-size: 16px; cursor: pointer; font-family: 'Orbitron', sans-serif;">IO2 CMD</button>
+<input type="text" id="textInput1" class="input" style="padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); font-size: 12px; font-family: 'Roboto Mono', monospace;" placeholder="[program-/script-name]">
+
+<button onclick="encodeText2()" style="background-color: #1ABC9C; color: white; border: none; padding: 10px; border-radius: 5px; font-size: 16px; cursor: pointer; font-family: 'Orbitron', sans-serif;">send to Legion AHK</button>
+<input type="text" id="textInput2" class="input" style="padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); font-size: 12px; font-family: 'Roboto Mono', monospace;" placeholder="[program-/script-name]">
+
+<button onclick="encodeText3()" style="background-color: #1ABC9C; color: white; border: none; padding: 10px; border-radius: 5px; font-size: 16px; cursor: pointer; font-family: 'Orbitron', sans-serif;">send to MQTT</button>
+<input type="text" id="textInput3" class="input" style="padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); font-size: 12px; font-family: 'Roboto Mono', monospace;" placeholder="madhouse/xyz [payload]">
+
+<button onclick="encodeText4()" style="background-color: #1ABC9C; color: white; border: none; padding: 10px; border-radius: 5px; font-size: 16px; cursor: pointer;  font-family: 'Orbitron', sans-serif;">send to [chatty]</button>
+<input type="text" id="textInput4" class="input" style="padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); font-size: 12px; font-family: 'Roboto Mono', monospace;" placeholder="Nachricht an [chatty]">
+</div>
+<div> 
+<button onclick="encodeText5()" style="background-color: #1ABC9C; color: white; border: none; padding: 10px; border-radius: 5px; font-size: 16px; cursor: pointer;  font-family: 'Orbitron', sans-serif;">ntfy cmd</button>
+<input type="text" id="textInput5" class="input" style="padding: 10px; border: 2px solid #1ABC9C; border-radius: 5px; box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); font-size: 12px; font-family: 'Roboto Mono', monospace;" placeholder="[remind 10s hallo]">
+</div>
+<div id="events"></div>
+
+<script type="text/javascript">
+<div id="events"></div>
+    const publishURL = `https://n.yyps.de/cmd`;
+    const subscribeURL = `https://n.yyps.de/log/sse`;
+    const events = document.getElementById('events');
+    const eventSource = new EventSource(subscribeURL);
+
+
+    // Incoming events
+    eventSource.onopen = () => {
+        let event = document.createElement('div');
+        //event.innerHTML = `EventSource connected to ${subscribeURL}`;
+        events.appendChild(event);
+    };
+    eventSource.onerror = (e) => {
+        let event = document.createElement('div');
+        //event.innerHTML = `EventSource error: Failed to connect to ${subscribeURL}`;
+        events.appendChild(event);
+    };
+    eventSource.onmessage = (e) => {
+        let eventData = JSON.parse(e.data);
+        let event = document.createElement('div');
+        //event.innerHTML = `<br><b>Topic:</b> ${eventData.topic}, Message: ${eventData.message}`;
+        events.appendChild(event);
+    };
+    
+    subscribeURL="https://n.yyps.de/alert"
+    
+       // Incoming events
+    eventSource.onopen = () => {
+        let event = document.createElement('div');
+        event.innerHTML = event.innerHTML = `EventSource connected to ${subscribeURL}`;
+        events.appendChild(event);
+    };
+    eventSource.onerror = (e) => {
+        let event = document.createElement('div');
+        event.innerHTML = `EventSource error: Failed to connect to ${subscribeURL}`;
+        events.appendChild(event);
+    };
+    eventSource.onmessage = (e) => {
+        let eventData = JSON.parse(e.data);
+        let event = document.createElement('div');
+        event.innerHTML = `<br><b>Topic:</b> ${eventData.topic}, <b>Message:</b> ${eventData.message}`;
+        if (!eventData.message.includes('---------------------------------------')) {
+          status.innerHTML =  `${currentTime}: ${eventData.message}`; 
+        }
+        event.innerHTML = `${eventData.message}`;
+        events.appendChild(event);
+    };
+
+</script>
+
+
+<br>
+<style>
+  .tech-dropdown {
+    background-color: #1ABC9C;
+    color: #ecf0f1;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-size: 14px;
+    font-family: "Courier New", monospace;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ecf0f1" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.7em center;
+    background-size: 12px 12px;
+    margin: 0;
+  }
+  .tech-dropdown:hover {
+    background-color: #16a085;
+    cursor: pointer;
+  }
+  .tech-dropdown:focus {
+    outline: none;
+  }
+  .tech-dropdown-option {
+    background-color: #16a085;
+    color: #ecf0f1;
+    font-family: "Courier New", monospace;
+  }
+  .tech-dropdown-option:hover {
+    background-color: #1ABC9C;
+  }
+</style>
+<select id="url-dropdown" class="tech-dropdown">
+    <option class="tech-dropdown-option" value="https://alert.dmw.zone/control/white.html">choose </option>
+    <option class="tech-dropdown-option" value="https://file1.dmw.zone/files/home/abraxas/docker/www/control/control.html">edit ctrl</option>
+    <option class="tech-dropdown-option" value="https://file1.dmw.zone/files/home/abraxas/docker/www/control/log.html">edit log</option>
+    <option class="tech-dropdown-option" value="https://tools-vsc-server.mi04yg.easypanel.host/?folder=/config/workspace">vs code</option>
+    <option class="tech-dropdown-option" value="https://nodered.dmw.zone/">node-red</option>
+    <option class="tech-dropdown-option" value="https://mojo.dmw.zone/">mojo</option>
+    <option class="tech-dropdown-option" value="https://n.yyps.de/alert">ntfy/alert</option>
+</select>
+
+
+ <div class="iframe-container">
+ <iframe id="controlled-iframe" src="https://alert.dmw.zone/control/white.html" width="70%" height="600" title="Iframe Controlled by Dropdown" class="iframe"></iframe>
+<iframe id="controlled-iframe2" src="https://alert.dmw.zone/control/log.html" width="29%" height="600" title="Iframe Controlled by Dropdown" class="iframe"></iframe>
+ </div>
+ 
+    <script>
+        function updateIframeSrc() {
+            var selectedUrl = document.getElementById('url-dropdown').value;
+            var iframe = document.getElementById('controlled-iframe');
+            iframe.src = selectedUrl;
+        }
+
+        document.getElementById('url-dropdown').addEventListener('change', updateIframeSrc);
+        window.onload = updateIframeSrc;
+
+    </script>
+
+<script>
+    document.getElementById('url-dropdown').addEventListener('change', function () {
+        var selectedUrl = this.value;
+        var iframe = document.getElementById('controlled-iframe');
+        iframe.src = selectedUrl;
+    });
+    
+        function executeScript() {
+        fetch('http://192.168.195.25:8123/api/states/input_text.last_screenshot', {
+            headers: {
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmODFmMjFkN2YzNzQ0NTlmYTBmYmYwNTJhYjAwZTQ0YiIsImlhdCI6MTY3OTE1OTY4NywiZXhwIjoxOTk0NTE5Njg3fQ.k7ogHuyy6f4EKXGr5QCjzPPJ6yf3v3u2OVvvxYnFH18',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let event = document.createElement('div');
+            event.innerHTML = `<br><b>State:</b> ${data.state}`;
+            events.appendChild(event);
+        })
+        .catch(error => console.error(error));
+    }
+   
+   
+       // MQTT client setup
+    const client = new Paho.MQTT.Client("192.168.195.25", 1883, "8743657832685");
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    const options = {
+        useSSL: false,/home/linuxbrew/.linuxbrew/bin/pueue
+
+        userName: "abraxas678",
+        password: "winter11",
+        onSuccess: onConnect,
+        onFailure: onFailure,
+    };
+
+
+
+    // Connect to the MQTT broker
+    client.connect(options);
+
+    function onConnect() {
+        console.log("Connected to MQTT broker");
+        client.subscribe("madhouse");
+    }
+
+    function onFailure(err) {
+        console.error("Failed to connect to MQTT broker: " + err.errorMessage);
+    }
+
+    function onConnectionLost(err) {
+        console.log("Disconnected from MQTT broker: " + err.errorMessage);
+    }
+
+    function onMessageArrived(message) {
+        console.log("Received MQTT message: " + message.payloadString);
+        let event = document.createElement('div');
+        event.innerHTML = `<br><b>Topic:</b> ${message.destinationName}, <b>Message:</b> ${message.payloadString}`;
+        events.appendChild(event);
+    } 
+
+</script>
+
+</body>
+</html>
